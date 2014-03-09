@@ -1,0 +1,38 @@
+法一：O(n^2) 
+设dp[i]表示以i为结尾的最长递增子序列的长度，则状态转移方程为：
+dp[i] = max{dp[j]+1}, 1<=j<i,a[j]<a[i].
+////////////////////////////////////////////////////////////
+   int n = num.size();
+    int dp[n+1];
+    memset(dp,0,sizeof(dp));
+    dp[1] = 1;
+    int res = 0;
+    for(int i = 2;i <= n;i++){
+        for(int j = 1 ;j < i;j++){
+            if(num[i-1]>num[j-1]){
+                dp[i] = max(dp[i],dp[j]+1);
+            }
+        }
+        res = max(res,dp[i]);
+    }
+////////////////////////////////////////////////////////////
+法二：O(nlogn)
+开辟一个栈s，每次取栈顶元素s和读到的元素a做比较，如果a>s，则加入栈；如果a<s，则二分查找栈中的比a大的第1个数，并替换掉该数。最后序列长度为栈的长度。  
+这起源于贪心的思想。对于长度为i的最长上升子序列，它的最后一个数字自然是越小越好，越有潜力。
+
+    int s[n+1]; //s[i]存储长度为i的最长上升子序列的最后一个数字
+
+    memset(s,0,sizeof(s));
+
+    s[1] = num[0];
+    int top = 1;
+    int maxLen = 1;
+    for(int i = 2 ; i <= n;i++){
+        if(num[i-1] > s[top]){
+            top = ++maxLen;
+        }else{
+            top = biSearch(1,top,s,num[i-1])+1;
+        }
+        s[top] = num[i-1];
+    }
+    cout<<maxLen<<endl;
