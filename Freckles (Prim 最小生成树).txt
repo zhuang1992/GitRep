@@ -1,0 +1,74 @@
+题意：平面上有n个点，并给出n个点的坐标。现在要用线把这些点全部连起来。问如何连使得线的总长度最短。
+
+
+分析：是一道裸的最小生成树问题。用Prim算法解决，贴到这儿当模板了。
+
+[cpp] view plaincopy
+#include <iostream>  
+#include <cstdio>  
+#include <memory.h>  
+#include <cmath>  
+#define N 105  
+#define INF 0xfffffff  
+using namespace std;  
+  
+struct Point  
+{  
+    double x,y;  
+  
+} points[N];  
+  
+double map[N][N];  
+bool used[N];  
+  
+double dis(Point a,Point b)  
+{  
+    return sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));  
+}  
+  
+int main()  
+{  
+    int n;  
+    while(scanf("%d",&n)!=EOF)  
+    {  
+        for(int i=0; i<n; i++)  
+        {  
+            scanf("%lf %lf",&points[i].x,&points[i].y);  
+        }  
+        memset(map,INF,sizeof(map));  
+        memset(used,0,sizeof(used));  
+        for(int i=0; i<n-1; i++)  
+            for(int j=i+1; j<n; j++)  
+            {  
+                map[i][j]=map[j][i]=dis(points[i],points[j]);  
+            }  
+        double res=0;  
+        int tmp;  
+        double m;  
+        used[0]=1;  
+        int count=n-1;  
+        while(count--)  
+        {  
+            m=INF;  
+            for(int i=1; i<n; i++)  
+            {  
+                if(!used[i]&&map[0][i]<m)  
+                {  
+                    m=map[0][i];  
+                    tmp=i;  
+                }  
+            }  
+            res+=m;  
+            used[tmp]=1;  
+            for(int j=1; j<n; j++)  
+            {  
+                if(!used[j]&&map[tmp][j]<map[0][j])  
+                {  
+                    map[0][j]=map[tmp][j];  
+                }  
+            }  
+        }  
+        printf("%.2lf\n",res);  
+    }  
+    return 0;  
+}  

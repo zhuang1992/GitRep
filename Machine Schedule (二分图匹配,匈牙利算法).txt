@@ -1,0 +1,69 @@
+题意：
+
+给k个任务，每一个任务都能被Computer A的x_mode或Computer B的y_mode处理。mode的转换需要重启。问如何安排任务的处理顺序，可以使得重启的次数最少。
+
+分析：
+
+二分图匹配。将每一个任务看成一条边，端点分别是Computer A的x_mode和Computer B的y_mode。求最小覆盖，即用最少的点数，使得每一条边至少都有一个点与它相连。根据最小覆盖=最大匹配。求该二分图的最大匹配即可。使用匈牙利算法。
+
+
+代码如下：
+
+[cpp] view plaincopy
+#include <iostream>  
+#include <cstdio>  
+#include <memory.h>  
+#define N 105  
+using namespace std;  
+  
+int match;  
+int map[N][N];  
+int mat[N];  
+bool used[N];  
+int n,m,k;  
+bool crosspath(int k)        //这是一个dfs  
+{  
+        for (int i=1;i<=m;i++)           //对于左边每一个点，遍历右边的所有点  
+        {  
+                if(map[k][i]==true&&used[i]==false)  //map[i][k]为true且used[i]为false，说明点i在增广路上  
+                {  
+                        used[i]=true;  
+                        if (mat[i]==0 || crosspath(mat[i]))  
+                        {  
+                                mat[i]=k;   //将边k-i加入增广路  
+                                return 1;  //从该点出有可增广路  
+                        }  
+                }  
+        }  
+        return 0;  
+}  
+void hungary()  
+{  
+        memset(mat,0,sizeof(mat));  
+        for (int i=1;i<=n;i++)                      //对二分图的左边进行遍历  
+        {  
+                memset(used,0,sizeof(used));  
+        if(crosspath(i))  
+            match++;  
+        }  
+}  
+  
+int main()  
+{  
+  
+    while(scanf("%d",&n)!=EOF&&n)  
+    {  
+        scanf("%d %d",&m,&k);  
+        int z,x,y;  
+        memset(map,0,sizeof(map));  
+        for(int i=1;i<=k;i++)  
+        {  
+            scanf("%d %d %d",&z,&x,&y);  
+            map[x][y]=1;                //邻接矩阵存储图  
+        }  
+        match=0;  
+        hungary();  
+        printf("%d\n",match);  
+    }  
+    return 0;  
+}  
