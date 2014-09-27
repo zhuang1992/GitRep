@@ -1,4 +1,6 @@
 //堆优化的dijkstra算法（手写堆）
+//虽说是用的堆，但并没有实现decreaseKey(H,v,dist[v])，还是按照PriorityQueue的实现方法来做的。
+//如果要实现decreaseKey，需要用一个location数组来储存value-key的反向映射。可以存指针，也可以存下标。以在O(1)时间中找到v在H中的位置，再进行sift-up。
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
@@ -138,85 +140,6 @@ int main()
     return 0;
 }
 
-//以下使用的是STL里面的priority_queue进行的优化
-#include <stdio.h>
-#include <string.h>
-#include <vector>
-#include <queue>
-#include <iostream>
-using namespace std;
-
-const int MaxN = 201;
-const int INF = 0x7fffffff / 2;
-typedef struct {	int l , v;	}	Edge;
-typedef vector < Edge > VE;
-struct Vex	{
-	int v , dis;
-	friend bool operator<(Vex v1 , Vex v2)	{
-		return v1.dis > v2.dis;
-	}
-};
-VE e[ MaxN ];
-priority_queue < Vex > Q;
-
-int dijkstra(VE *e , int n , int st , int ed)
-{
-	int dis[ MaxN ] , i;
-	bool visited[ MaxN ] = { 0 };
-	for (i = 0;i < n;i ++)	{
-		dis[ i ] = INF;
-	}
-
-	Vex now , next;
-	now.dis = dis[ now.v = st ] = 0;
-	Edge et;
-	while (!Q.empty())	Q.pop();
-	Q.push(now);
-	while (!Q.empty())	{
-		now = Q.top();Q.pop();
-		if (!visited[ now.v ])	{
-			visited[ now.v ] = true;
-			for (i = 0;i < e[ now.v ].size();i ++)	{
-				et = e[ now.v ][ i ];
-				next.v = et.v;
-				if (!visited[ et.v ] && et.l + dis[ now.v ] < dis[ et.v ])	{
-					next.dis = dis[ next.v = et.v ] = et.l + dis[ now.v ];
-					Q.push(next);
-				}
-			}
-		}
-	}
-	for (i = 0;i < n;i ++)	{
-		if (dis[ i ] == INF)	{
-			printf("-1 ");
-		}	else	{
-			printf("%d " , dis[ i ]);
-		}
-	}
-	return dis[ ed ];
-}
-
-void __test()
-{
-	Edge ed;
-	int n , m , i , a , b , c;
-
-	scanf("%d%d" , &n , &m);
-	for (i = 0;i < n;i ++)	{
-		e[i].clear();
-	}
-	for (i = 0;i < m;i ++)	{
-		scanf("%d%d%d" , &a , &b , &ed.l);
-		ed.v = b;e[a].push_back(ed);
-		ed.v = a;e[b].push_back(ed);
-	}
-	scanf("%d %d" , &a , &b);
-	dijkstra(e , n , a , b);
-}
-int main()
-{
-	__test();
-}
 /*
 8 9
 0 1 5
