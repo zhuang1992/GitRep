@@ -21,7 +21,7 @@ void PrimeByGriddling() {
         }
         prime[cnt++] = i;
         if(i<=10000) {         //这个if是有必要的。防止i*i超出int范围
-            for(int j = i*i; j < RANGE; j+=i) {
+            for(int j = i*i; j < RANGE; j+=i) {  //从i*i开始，i*(i-1)已经在之前处理过了
                 hash[j] = 1;
             }
         }
