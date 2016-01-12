@@ -9,7 +9,7 @@ static int partition(int ar[], int l, int r){
 		while(i <= r && ar[i] < pivot){
 			i ++;
 		}
-		while(j >= 0 && ar[j] > pivot){
+		while(j >= l && ar[j] > pivot){
 			j --;
 		}
 		if(i < j){
